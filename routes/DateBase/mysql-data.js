@@ -62,7 +62,9 @@ exports.getData=function (req,res,name) {
                 }
                 var fenlei=relut[0].home_fenlei.split("-");
                 var zhaodaowo=relut[0].home_zhaodaowo.split("-");
-                res.send({status:"200",msg:"成功返回",data:{"fenlei":fenlei,"zhaodaowo":zhaodaowo}})
+                var touxiang=relut[0].home_touxiang;
+                var shenghuozhao=relut[0].home_shenghuozhao;
+                res.send({status:"200",msg:"成功返回",data:{"fenlei":fenlei,"zhaodaowo":zhaodaowo,"touxiang":touxiang,"shenghuozhao":shenghuozhao}})
             })
         }else{
             res.send({status:"404",msg:"找不到这个用户"});
@@ -74,6 +76,11 @@ exports.getWenzhang=function (req,res,yema,leixing) {
     connection.query("select count(*) as count from web_content",function (err,data) {
         if(leixing=="one"){
          var count=data[0].count;
+         connection.query("select * from web_content limit "+yema+",9",function (err,relut) {
+             res.send({"status":200,"count":count,"msg":"成功",data:relut});
+         })
+        }else{
+
         }
     })
 }
