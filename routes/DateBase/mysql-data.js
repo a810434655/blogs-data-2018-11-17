@@ -48,24 +48,32 @@ var connection =mysql.createConnection({
 
 // 直连
 exports.getData=function (req,res,name) {
-    connection.query("select * from user where name=?",[name],function (err,data) {
+    connection.query("select * from web_user where user_name=?",[name],function (err,data) {
         if(err){
             console.log(err.stack);
             return false
         }
-        console.log(data.length);
         if(data.length>0) {
-            var tiaojian=data[0].id;
-            connection.query("select * from home where name=?",[tiaojian],function (err,relut) {
+            var tiaojian=data[0].user_id;
+            connection.query("select * from web_home where user_id=?",[tiaojian],function (err,relut) {
                 if(err){
                     console.log(err.stack);
                     return false
                 }
-                res.send({status:"200",msg:"成功返回",data:relut[0]})
+                var fenlei=relut[0].home_fenlei.split("-");
+                var zhaodaowo=relut[0].home_zhaodaowo.split("-");
+                res.send({status:"200",msg:"成功返回",data:{"fenlei":fenlei,"zhaodaowo":zhaodaowo}})
             })
         }else{
             res.send({status:"404",msg:"找不到这个用户"});
         }
     })
     // connection.end();
+}
+exports.getWenzhang=function (req,res,yema,leixing) {
+    connection.query("select count(*) as count from web_content",function (err,data) {
+        if(leixing=="one"){
+         var count=data[0].count;
+        }
+    })
 }
