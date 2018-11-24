@@ -73,14 +73,20 @@ exports.getData=function (req,res,name) {
     // connection.end();
 }
 exports.getWenzhang=function (req,res,yema,leixing) {
-    connection.query("select count(*) as count from web_content",function (err,data) {
-        if(leixing=="one"){
-         var count=data[0].count;
-         connection.query("select * from web_content limit "+yema+",9",function (err,relut) {
-             res.send({"status":200,"count":count,"msg":"成功",data:relut});
-         })
-        }else{
+    if(leixing=="one"){
+        connection.query("select count(*) as count from web_content",function (err,data) {
+            var count=data[0].count;
+                connection.query("select * from web_content limit "+yema*9+",9",function (err,relut) {
+                    res.send({"status":200,"count":count,"msg":"成功",data:relut});
+                })
+        })
+    }else{
+        connection.query("select count(*) as count from web_content where conten_leixing=?",[leixing],function (err,data) {
+            var count=data[0].count;
+            connection.query("select * from web_content where conten_leixing=? limit "+yema*9+",9",[leixing],function (err,relut) {
+                res.send({"status":200,"count":count,"msg":"成功",data:relut});
+            })
+        })
+    }
 
-        }
-    })
 }
